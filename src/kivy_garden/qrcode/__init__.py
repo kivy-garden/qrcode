@@ -13,12 +13,6 @@ from kivy.uix.floatlayout import FloatLayout
 
 import qrcode
 
-try:
-    import qrcode
-except ImportError:
-    sys.exit("Error: qrcode does not seem to be installed." +
-             "Try 'sudo pip install qrcode'")
-
 
 Builder.load_string('''
 <QRCodeWidget>
