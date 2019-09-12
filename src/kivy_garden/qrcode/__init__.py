@@ -1,18 +1,18 @@
 ''' Kivy Widget that accepts data and displays qrcode
 '''
 
-from threading import Thread
 from functools import partial
+from threading import Thread
 
+from kivy.clock import Clock
+from kivy.graphics.texture import Texture
+from kivy.lang import Builder
+from kivy.properties import (BooleanProperty, ListProperty, ObjectProperty,
+                             StringProperty)
 from kivy.uix.floatlayout import FloatLayout
 
-from kivy.graphics.texture import Texture
-from kivy.properties import StringProperty
-from kivy.properties import ObjectProperty, StringProperty, ListProperty,\
-    BooleanProperty
-from kivy.lang import Builder
-from kivy.clock import Clock
 import qrcode
+
 try:
     import qrcode
 except ImportError:
