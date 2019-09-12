@@ -5,7 +5,7 @@ PYTHON=$(VENV_NAME)/bin/python
 ISORT=$(VENV_NAME)/bin/isort
 FLAKE8=$(VENV_NAME)/bin/flake8
 TWINE=`which twine`
-SOURCES=src/ tests/ setup.py
+SOURCES=src/
 # using full path so it can be used outside the root dir
 SPHINXBUILD=$(shell realpath venv/bin/sphinx-build)
 DOCS_DIR=doc
@@ -47,13 +47,13 @@ run: run/linux
 test:
 	$(TOX)
 
-lint/isort-check: virtualenv
+lint/isort-check: virtualenv/test
 	$(ISORT) --check-only --recursive --diff $(SOURCES)
 
-lint/isort-fix: virtualenv
+lint/isort-fix: virtualenv/test
 	$(ISORT) --recursive $(SOURCES)
 
-lint/flake8: virtualenv
+lint/flake8: virtualenv/test
 	$(FLAKE8) $(SOURCES)
 
 lint: lint/isort-check lint/flake8
