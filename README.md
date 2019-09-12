@@ -1,30 +1,42 @@
-Module QRCode
-=============
+# Module QRCode
 
-<img src="https://github.com/kivy-garden/garden.qrcode/blob/master/screenshot.png" align="right" width="256" />
+[![Build Status](https://travis-ci.com/kivy-garden/qrcode.svg?branch=develop)](https://travis-ci.com/kivy-garden/qrcode)
+[![PyPI version](https://badge.fury.io/py/qrcode.svg)](https://badge.fury.io/py/qrcode)
+
+<img src="https://github.com/kivy-garden/qrcode/blob/develop/screenshot.png" align="right" width="256" />
 
 A QRCode Widget.
 
-Requirements:
+## Install
+```sh
+pip install kivy-garden.qrcode
+```
 
-    pip install qrcode
+## Usage
 
-Usage::
+Python:
+```python
+from kivy_garden.qrcode import QRCodeWidget
+parent.add_widget(QRCodeWidget(data="Kivy Rocks"))
+```
 
- Python::
+kv:
+```yaml
 
-    from kivy.garden.qrcode import QRCodeWidget
-    parent.add_widget(QRCodeWidget(data="Kivy Rocks"))
+#:import QRCodeWidget kivy_garden.qrcode
 
- kv::
+BoxLayout:
+    orientation: 'vertical'
+    Button:
+        text: 'press to change qrcode'
+        on_release: qr.data = "Kivy Rocks!"
+    QRCodeWidget:
+        id: qr
+        data: 'Hello World'
+```
 
-    #:import QRCodeWidget kivy.garden.qrcode
-
-    BoxLayout:
-        orientation: 'vertical'
-        Button:
-            text: 'press to change qrcode'
-            on_release: qr.data = "Kivy Rocks!"
-        QRCodeWidget:
-            id: qr
-            data: 'Hello World'
+## Contribute
+Pull requests are welcome, simply make sure tests are passing via:
+```sh
+make test
+```
