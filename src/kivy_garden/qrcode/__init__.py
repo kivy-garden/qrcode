@@ -5,13 +5,12 @@ Kivy Widget that accepts data and displays qrcode.
 from functools import partial
 from threading import Thread
 
+import qrcode
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, ListProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
-
-import qrcode
 
 
 Builder.load_string('''
@@ -76,7 +75,7 @@ class QRCodeWidget(FloatLayout):
     '''
 
     def __init__(self, **kwargs):
-        super(QRCodeWidget, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.addr = None
         self.qr = None
         self._qrtexture = None
