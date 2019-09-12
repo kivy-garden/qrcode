@@ -40,7 +40,7 @@ ifeq ($(OS), Ubuntu)
 endif
 
 run/linux: virtualenv
-	$(PYTHON) src/main.py --debug
+	$(PYTHON) src/kivy_garden/qrcode/__init__.py
 
 run: run/linux
 
