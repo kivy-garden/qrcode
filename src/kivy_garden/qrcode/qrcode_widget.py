@@ -1,54 +1,17 @@
-''' Kivy Widget that accepts data and displays qrcode
-'''
-
-from threading import Thread
+"""
+Kivy Widget that accepts data and displays qrcode.
+"""
+import os
 from functools import partial
+from threading import Thread
 
+import qrcode
+from kivy.clock import Clock
+from kivy.graphics.texture import Texture
+from kivy.lang import Builder
+from kivy.properties import BooleanProperty, ListProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
 
-from kivy.graphics.texture import Texture
-from kivy.properties import StringProperty
-from kivy.properties import ObjectProperty, StringProperty, ListProperty,\
-    BooleanProperty
-from kivy.lang import Builder
-from kivy.clock import Clock
-import qrcode
-try:
-    import qrcode
-except ImportError:
-    sys.exit("Error: qrcode does not seem to be installed." +\
-             "Try 'sudo pip install qrcode'")
-
-
-
-Builder.load_string('''
-<QRCodeWidget>
-    on_parent: if args[1]: qrimage.source = self.loading_image
-    canvas.before:
-        # Draw white Rectangle
-        Color:
-            rgba: root.background_color
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    canvas.after:
-        Color:
-            rgba: .5, .5, .5, 1 if root.show_border else 0
-        Line:
-            width: dp(1.333)
-            points:
-                dp(2), dp(2),\
-                self.width - dp(2), dp(2),\
-                self.width - dp(2), self.height - dp(2),\
-                dp(2), self.height - dp(2),\
-                dp(2), dp(2)
-    Image
-        id: qrimage
-        pos_hint: {'center_x': .5, 'center_y': .5}
-        allow_stretch: True
-        size_hint: None, None
-        size: root.width * .9, root.height * .9
-''')
 
 class QRCodeWidget(FloatLayout):
 
@@ -76,13 +39,15 @@ class QRCodeWidget(FloatLayout):
 
     loading_image = StringProperty('data/images/image-loading.gif')
     '''Intermediate image to be displayed while the widget ios being loaded.
-    
+
     :data:`loading_image` is a :class:`~kivy.properties.StringProperty`,
     defaulting to `'data/images/image-loading.gif'`.
     '''
 
     def __init__(self, **kwargs):
-        super(QRCodeWidget, self).__init__(**kwargs)
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        Builder.load_file(os.path.join(module_dir, "qrcode_widget.kv"))
+        super().__init__(**kwargs)
         self.addr = None
         self.qr = None
         self._qrtexture = None
@@ -129,7 +94,7 @@ class QRCodeWidget(FloatLayout):
             qr.make(fit=True)
         except Exception as e:
             print(e)
-            self.qr=None
+            self.qr = None
         self.update_texture()
 
     def setMinimumSize(self, size):
@@ -137,7 +102,7 @@ class QRCodeWidget(FloatLayout):
         self._texture_size = size
 
     def _create_texture(self, k, dt):
-        self._qrtexture = texture = Texture.create(size=(k,k), colorfmt='rgb')
+        self._qrtexture = texture = Texture.create(size=(k, k), colorfmt='rgb')
         # don't interpolate texture
         texture.min_filter = 'nearest'
         texture.mag_filter = 'nearest'
@@ -148,22 +113,21 @@ class QRCodeWidget(FloatLayout):
 
         matrix = self.qr.get_matrix()
         k = len(matrix)
-        
+
         # create the texture in main UI thread otherwise
         # this will lead to memory corruption
         Clock.schedule_once(partial(self._create_texture, k), -1)
-        
-        
+
         cr, cg, cb, ca = self.background_color[:]
         cr, cg, cb = cr*255, cg*255, cb*255
-        ###used bytearray for python 3.5 eliminates need for btext
+        # used bytearray for python 3.5 eliminates need for btext
         buff = bytearray()
         for r in range(k):
             for c in range(k):
                 buff.extend([0, 0, 0] if matrix[r][c] else [cr, cg, cb])
 
         # then blit the buffer
-        # join not neccesarry when using a byte array 
+        # join not neccesarry when using a byte array
         # buff =''.join(map(chr, buff))
         # update texture in UI thread.
         Clock.schedule_once(lambda dt: self._upd_texture(buff))
@@ -174,13 +138,14 @@ class QRCodeWidget(FloatLayout):
             # if texture hasn't yet been created delay the texture updation
             Clock.schedule_once(lambda dt: self._upd_texture(buff))
             return
-        
+
         texture.blit_buffer(buff, colorfmt='rgb', bufferfmt='ubyte')
         texture.flip_vertical()
         img = self.ids.qrimage
         img.anim_delay = -1
         img.texture = texture
         img.canvas.ask_update()
+
 
 if __name__ == '__main__':
     from kivy.app import runTouchApp
