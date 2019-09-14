@@ -1,7 +1,7 @@
 """
 Kivy Widget that accepts data and displays qrcode.
 """
-
+import os
 from functools import partial
 from threading import Thread
 
@@ -11,36 +11,6 @@ from kivy.graphics.texture import Texture
 from kivy.lang import Builder
 from kivy.properties import BooleanProperty, ListProperty, StringProperty
 from kivy.uix.floatlayout import FloatLayout
-
-
-Builder.load_string('''
-<QRCodeWidget>
-    on_parent: if args[1]: qrimage.source = self.loading_image
-    canvas.before:
-        # Draw white Rectangle
-        Color:
-            rgba: root.background_color
-        Rectangle:
-            size: self.size
-            pos: self.pos
-    canvas.after:
-        Color:
-            rgba: .5, .5, .5, 1 if root.show_border else 0
-        Line:
-            width: dp(1.333)
-            points:
-                dp(2), dp(2),\
-                self.width - dp(2), dp(2),\
-                self.width - dp(2), self.height - dp(2),\
-                dp(2), self.height - dp(2),\
-                dp(2), dp(2)
-    Image
-        id: qrimage
-        pos_hint: {'center_x': .5, 'center_y': .5}
-        allow_stretch: True
-        size_hint: None, None
-        size: root.width * .9, root.height * .9
-''')
 
 
 class QRCodeWidget(FloatLayout):
@@ -75,6 +45,8 @@ class QRCodeWidget(FloatLayout):
     '''
 
     def __init__(self, **kwargs):
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        Builder.load_file(os.path.join(module_dir, "qrcode_widget.kv"))
         super().__init__(**kwargs)
         self.addr = None
         self.qr = None
