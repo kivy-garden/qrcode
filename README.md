@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/kivy-garden/qrcode.svg?branch=develop)](https://travis-ci.com/kivy-garden/qrcode)
 [![PyPI version](https://badge.fury.io/py/kivy_garden.qrcode.svg)](https://badge.fury.io/py/kivy_garden.qrcode)
 
-<img src="https://github.com/kivy-garden/qrcode/blob/develop/screenshot.png" align="right" width="256" />
+<img src="https://raw.githubusercontent.com/kivy-garden/qrcode/develop/screenshot.png?raw=True" align="right" width="256" />
 
 A QRCode Widget.
 
