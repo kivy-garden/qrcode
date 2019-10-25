@@ -9,7 +9,7 @@ import qrcode
 from kivy.clock import Clock
 from kivy.graphics.texture import Texture
 from kivy.lang import Builder
-from kivy.properties import BooleanProperty, ListProperty, StringProperty
+from kivy.properties import BooleanProperty, ListProperty, StringProperty, NumericProperty
 from kivy.uix.floatlayout import FloatLayout
 
 
@@ -27,6 +27,13 @@ class QRCodeWidget(FloatLayout):
 
     :data:`data` is a :class:`~kivy.properties.StringProperty`, defaulting to
     `None`.
+    '''
+
+    error_correction = NumericProperty(qrcode.constants.ERROR_CORRECT_L)
+    ''' The error correction level for the qrcode.
+
+    :data:`error_correction` is a constant in :module:`~qrcode.constants`, defaulting
+    to `qrcode.constants.ERROR_CORRECT_L`.
     '''
 
     background_color = ListProperty((1, 1, 1, 1))
@@ -58,12 +65,15 @@ class QRCodeWidget(FloatLayout):
         img = self.ids.get('qrimage', None)
 
         if not img:
-            # if texture hasn't yet been created delay the texture updation
+            # if texture hasn't yet been created delay the texture updating
             Clock.schedule_once(lambda dt: self.on_data(instance, value))
             return
         img.anim_delay = .25
         img.source = self.loading_image
         Thread(target=partial(self.generate_qr, value)).start()
+
+    def on_error_correction(self, instance, value):
+        self.update_qr()
 
     def generate_qr(self, value):
         self.set_addr(value)
@@ -81,15 +91,14 @@ class QRCodeWidget(FloatLayout):
         if not self.addr and self.qr:
             return
         QRCode = qrcode.QRCode
-        L = qrcode.constants.ERROR_CORRECT_L
         addr = self.addr
         try:
             self.qr = qr = QRCode(
                 version=None,
-                error_correction=L,
+                error_correction=self.error_correction,
                 box_size=10,
                 border=0,
-                )
+            )
             qr.add_data(addr)
             qr.make(fit=True)
         except Exception as e:
@@ -127,7 +136,7 @@ class QRCodeWidget(FloatLayout):
                 buff.extend([0, 0, 0] if matrix[r][c] else [cr, cg, cb])
 
         # then blit the buffer
-        # join not neccesarry when using a byte array
+        # join not necessary when using a byte array
         # buff =''.join(map(chr, buff))
         # update texture in UI thread.
         Clock.schedule_once(lambda dt: self._upd_texture(buff))
@@ -135,7 +144,7 @@ class QRCodeWidget(FloatLayout):
     def _upd_texture(self, buff):
         texture = self._qrtexture
         if not texture:
-            # if texture hasn't yet been created delay the texture updation
+            # if texture hasn't yet been created delay the texture updating
             Clock.schedule_once(lambda dt: self._upd_texture(buff))
             return
 
@@ -150,5 +159,6 @@ class QRCodeWidget(FloatLayout):
 if __name__ == '__main__':
     from kivy.app import runTouchApp
     import sys
+
     data = str(sys.argv[1:])
     runTouchApp(QRCodeWidget(data=data))
