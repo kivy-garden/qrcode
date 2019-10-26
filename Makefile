@@ -15,22 +15,9 @@ PYTHON_VERSION=$(PYTHON_MAJOR_VERSION).$(PYTHON_MINOR_VERSION)
 PYTHON_WITH_VERSION=python$(PYTHON_VERSION)
 DOCKER_IMAGE_LINUX=kivy/qrcode-linux
 SYSTEM_DEPENDENCIES= \
-    build-essential \
-    ccache \
-    cmake \
-    curl \
-	git \
-    libsdl2-dev \
-    libsdl2-image-dev \
-    libsdl2-mixer-dev \
-    libsdl2-ttf-dev \
-    libpython3.6-dev \
-    libpython$(PYTHON_VERSION)-dev \
-    pkg-config \
+    libgl1 \
     python3.6 \
-    python3.6-dev \
     python$(PYTHON_VERSION) \
-    python$(PYTHON_VERSION)-dev \
     tox \
     virtualenv
 
@@ -91,9 +78,9 @@ clean/all: clean
 	rm -rf $(VIRTUAL_ENV) .tox/
 
 docker/pull:
-	docker pull $(DOCKER_IMAGE_LINUX):latest
+	docker pull $(DOCKER_IMAGE_LINUX):latest || true
 
-docker/build: docker/pull
+docker/build:
 	docker build --cache-from=$(DOCKER_IMAGE_LINUX) --tag=$(DOCKER_IMAGE_LINUX) --file=dockerfiles/Dockerfile-linux .
 
 docker/push:
