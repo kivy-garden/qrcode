@@ -27,6 +27,7 @@ ENV LANG="en_US.UTF-8" \
 
 # install system dependencies
 RUN apt update -qq > /dev/null && apt install -qq --yes --no-install-recommends \
+    git \
     make \
     sudo && \
     rm -rf /var/lib/apt/lists/*
