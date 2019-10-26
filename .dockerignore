@@ -1,0 +1,5 @@
+bin/
+venv/
+.buildozer/
+.pytest_cache/
+.tox/
