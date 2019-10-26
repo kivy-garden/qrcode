@@ -4,6 +4,7 @@ TOX=`which tox`
 PYTHON=$(VIRTUAL_ENV)/bin/python
 ISORT=$(VIRTUAL_ENV)/bin/isort
 FLAKE8=$(VIRTUAL_ENV)/bin/flake8
+PYTEST=$(VIRTUAL_ENV)/bin/pytest
 TWINE=`which twine`
 SOURCES=src/ tests/
 # using full path so it can be used outside the root dir
@@ -12,6 +13,7 @@ DOCS_DIR=doc
 PYTHON_MAJOR_VERSION=3
 PYTHON_MINOR_VERSION=7
 PYTHON_VERSION=$(PYTHON_MAJOR_VERSION).$(PYTHON_MINOR_VERSION)
+PYTHON_MAJOR_MINOR=$(PYTHON_MAJOR_VERSION)$(PYTHON_MINOR_VERSION)
 PYTHON_WITH_VERSION=python$(PYTHON_VERSION)
 DOCKER_IMAGE_LINUX=kivy/qrcode-linux
 SYSTEM_DEPENDENCIES= \
@@ -42,6 +44,10 @@ run: virtualenv
 
 test:
 	$(TOX)
+	@if test -n "$$CI"; then .tox/py$(PYTHON_MAJOR_MINOR)/bin/coveralls; fi; \
+
+pytest: virtualenv/test
+	PYTHONPATH=src $(PYTEST) --cov src/ --cov-report html tests/
 
 lint/isort-check: virtualenv/test
 	$(ISORT) --check-only --recursive --diff $(SOURCES)
