@@ -1,14 +1,15 @@
-VENV_NAME=venv
-PIP=$(VENV_NAME)/bin/pip
+VIRTUAL_ENV ?= venv
+PIP=$(VIRTUAL_ENV)/bin/pip
 TOX=`which tox`
-PYTHON=$(VENV_NAME)/bin/python
-ISORT=$(VENV_NAME)/bin/isort
-FLAKE8=$(VENV_NAME)/bin/flake8
+PYTHON=$(VIRTUAL_ENV)/bin/python
+ISORT=$(VIRTUAL_ENV)/bin/isort
+FLAKE8=$(VIRTUAL_ENV)/bin/flake8
 TWINE=`which twine`
 SOURCES=src/ tests/
 # using full path so it can be used outside the root dir
 SPHINXBUILD=$(shell realpath venv/bin/sphinx-build)
 DOCS_DIR=doc
+DOCKER_IMAGE_LINUX=kivy/qrcode-linux
 SYSTEM_DEPENDENCIES= \
 	libpython$(PYTHON_VERSION)-dev \
 	libsdl2-dev \
@@ -24,12 +25,12 @@ PYTHON_WITH_VERSION=python$(PYTHON_VERSION)
 
 all: system_dependencies virtualenv
 
-venv:
-	test -d venv || virtualenv -p $(PYTHON_WITH_VERSION) venv
-
-virtualenv: venv
+$(VIRTUAL_ENV):
+	virtualenv -p $(PYTHON_WITH_VERSION) $(VIRTUAL_ENV)
 	$(PIP) install Cython==0.28.6
 	$(PIP) install -r requirements.txt
+
+virtualenv: $(VIRTUAL_ENV)
 
 virtualenv/test: virtualenv
 	$(PIP) install -r requirements/requirements-test.txt
@@ -39,10 +40,8 @@ ifeq ($(OS), Ubuntu)
 	sudo apt install --yes --no-install-recommends $(SYSTEM_DEPENDENCIES)
 endif
 
-run/linux: virtualenv
+run: virtualenv
 	$(PYTHON) src/kivy_garden/qrcode/qrcode_widget.py
-
-run: run/linux
 
 test:
 	$(TOX)
@@ -75,9 +74,26 @@ release/upload:
 	$(TWINE) upload dist/*
 
 clean: release/clean docs/clean
-	py3clean src/
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	find . -type d -name "*.egg-info" -exec rm -r {} +
 
 clean/all: clean
-	rm -rf $(VENV_NAME) .tox/
+	rm -rf $(VIRTUAL_ENV) .tox/
+
+docker/pull:
+	docker pull $(DOCKER_IMAGE_LINUX):latest
+
+docker/build: docker/pull
+	docker build --cache-from=$(DOCKER_IMAGE_LINUX) --tag=$(DOCKER_IMAGE_LINUX) --file=dockerfiles/Dockerfile-linux .
+
+docker/push:
+	docker push $(DOCKER_IMAGE_LINUX)
+
+docker/run/test: docker/build
+	docker run --env-file dockerfiles/env.list -v /tmp/.X11-unix:/tmp/.X11-unix $(DOCKER_IMAGE_LINUX) 'make test'
+
+docker/run/app: docker/build
+	docker run --env-file dockerfiles/env.list -v /tmp/.X11-unix:/tmp/.X11-unix $(DOCKER_IMAGE_LINUX) 'make run'
+
+docker/run/shell: docker/build
+	docker run --env-file dockerfiles/env.list -v /tmp/.X11-unix:/tmp/.X11-unix -it --rm $(DOCKER_IMAGE_LINUX)

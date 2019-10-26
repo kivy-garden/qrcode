@@ -6,12 +6,5 @@ services:
   - docker
   - xvfb
 
-env:
-  matrix:
-    - TAG=qrcode-linux DOCKERFILE=dockerfiles/Dockerfile-linux COMMAND='make test'
-
-before_script:
-  - docker build --tag=$TAG --file=$DOCKERFILE --build-arg CI .
-
 script:
-  - travis_wait docker run --env-file dockerfiles/env.list -v /tmp/.X11-unix:/tmp/.X11-unix $TAG $COMMAND
+  - make docker/run/test
