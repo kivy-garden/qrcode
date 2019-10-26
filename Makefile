@@ -9,21 +9,33 @@ SOURCES=src/ tests/
 # using full path so it can be used outside the root dir
 SPHINXBUILD=$(shell realpath venv/bin/sphinx-build)
 DOCS_DIR=doc
-DOCKER_IMAGE_LINUX=kivy/qrcode-linux
-SYSTEM_DEPENDENCIES= \
-	libpython$(PYTHON_VERSION)-dev \
-	libsdl2-dev \
-	libzbar-dev \
-	tox \
-	virtualenv
-OS=$(shell lsb_release -si)
 PYTHON_MAJOR_VERSION=3
 PYTHON_MINOR_VERSION=7
 PYTHON_VERSION=$(PYTHON_MAJOR_VERSION).$(PYTHON_MINOR_VERSION)
 PYTHON_WITH_VERSION=python$(PYTHON_VERSION)
+DOCKER_IMAGE_LINUX=kivy/qrcode-linux
+SYSTEM_DEPENDENCIES= \
+    build-essential \
+    ccache \
+    cmake \
+    curl \
+	git \
+    libsdl2-dev \
+    libsdl2-image-dev \
+    libsdl2-mixer-dev \
+    libsdl2-ttf-dev \
+    libpython3.6-dev \
+    libpython$(PYTHON_VERSION)-dev \
+    pkg-config \
+    python3.6 \
+    python3.6-dev \
+    python$(PYTHON_VERSION) \
+    python$(PYTHON_VERSION)-dev \
+    tox \
+    virtualenv
 
 
-all: system_dependencies virtualenv
+all: virtualenv
 
 $(VIRTUAL_ENV):
 	virtualenv -p $(PYTHON_WITH_VERSION) $(VIRTUAL_ENV)
@@ -36,9 +48,7 @@ virtualenv/test: virtualenv
 	$(PIP) install -r requirements/requirements-test.txt
 
 system_dependencies:
-ifeq ($(OS), Ubuntu)
-	sudo apt install --yes --no-install-recommends $(SYSTEM_DEPENDENCIES)
-endif
+	sudo apt update -qq > /dev/null && sudo apt -qq install --yes --no-install-recommends $(SYSTEM_DEPENDENCIES)
 
 run: virtualenv
 	$(PYTHON) src/kivy_garden/qrcode/qrcode_widget.py
