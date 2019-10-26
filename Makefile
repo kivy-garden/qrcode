@@ -20,8 +20,7 @@ SYSTEM_DEPENDENCIES= \
     libgl1 \
     python3.6 \
     python$(PYTHON_VERSION) \
-    tox \
-    virtualenv
+    tox
 
 
 all: virtualenv
