@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+  - Add error correction property, refs #1
+  - Enable cover testing, refs #3
+  - CI build over Docker, refs #4
+
 ## [2019.0914]
 
   - Migrate to new garden layout, refs #4
