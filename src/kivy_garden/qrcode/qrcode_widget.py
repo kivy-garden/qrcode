@@ -129,7 +129,7 @@ class QRCodeWidget(FloatLayout):
         Clock.schedule_once(partial(self._create_texture, k), -1)
 
         cr, cg, cb, ca = self.background_color[:]
-        cr, cg, cb = cr*255, cg*255, cb*255
+        cr, cg, cb = int(cr*255), int(cg*255), int(cb*255)
         # used bytearray for python 3.5 eliminates need for btext
         buff = bytearray()
         for r in range(k):
