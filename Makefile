@@ -26,7 +26,7 @@ SYSTEM_DEPENDENCIES= \
 all: virtualenv
 
 $(VIRTUAL_ENV):
-	virtualenv -p $(PYTHON_WITH_VERSION) $(VIRTUAL_ENV)
+	$(PYTHON_WITH_VERSION) -m venv $(VIRTUAL_ENV)
 	$(PIP) install Cython==0.28.6
 	$(PIP) install -r requirements.txt
 
@@ -49,10 +49,10 @@ pytest: virtualenv/test
 	PYTHONPATH=src $(PYTEST) --cov src/ --cov-report html tests/
 
 lint/isort-check: virtualenv/test
-	$(ISORT) --check-only --recursive --diff $(SOURCES)
+	$(ISORT) --check-only --diff $(SOURCES)
 
 lint/isort-fix: virtualenv/test
-	$(ISORT) --recursive $(SOURCES)
+	$(ISORT) $(SOURCES)
 
 lint/flake8: virtualenv/test
 	$(FLAKE8) $(SOURCES)
