@@ -13,6 +13,9 @@ from kivy.properties import (BooleanProperty, ListProperty, NumericProperty,
                              StringProperty)
 from kivy.uix.floatlayout import FloatLayout
 
+module_dir = os.path.dirname(os.path.abspath(__file__))
+Builder.load_file(os.path.join(module_dir, "qrcode_widget.kv"))
+
 
 class QRCodeWidget(FloatLayout):
 
@@ -53,8 +56,6 @@ class QRCodeWidget(FloatLayout):
     """
 
     def __init__(self, **kwargs):
-        module_dir = os.path.dirname(os.path.abspath(__file__))
-        Builder.load_file(os.path.join(module_dir, "qrcode_widget.kv"))
         super().__init__(**kwargs)
         self.addr = None
         self.qr = None
