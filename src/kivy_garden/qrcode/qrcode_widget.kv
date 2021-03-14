@@ -13,11 +13,11 @@
         Line:
             width: dp(1.333)
             points:
-                dp(2), dp(2),\
-                self.width - dp(2), dp(2),\
-                self.width - dp(2), self.height - dp(2),\
-                dp(2), self.height - dp(2),\
-                dp(2), dp(2)
+                self.x + dp(2), self.y + dp(2),\
+                self.x + self.width - dp(2), self.y + dp(2),\
+                self.x + self.width - dp(2), self.y + self.height - dp(2),\
+                self.x + dp(2), self.y + self.height - dp(2),\
+                self.x + dp(2), self.y + dp(2)
     Image
         id: qrimage
         pos_hint: {'center_x': .5, 'center_y': .5}

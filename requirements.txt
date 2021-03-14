@@ -1,2 +1,2 @@
-Kivy==1.11.1
-qrcode==6.1
+-r requirements/requirements-base.txt
+-r requirements/requirements-test.txt
