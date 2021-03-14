@@ -43,7 +43,7 @@ run: virtualenv
 
 test:
 	$(TOX)
-	@if test -n "$$CI"; then .tox/py$(PYTHON_MAJOR_MINOR)/bin/coveralls; fi; \
+	@if test -n "$$TRAVIS"; then .tox/py$(PYTHON_MAJOR_MINOR)/bin/coveralls; fi; \
 
 pytest: virtualenv/test
 	PYTHONPATH=src $(PYTEST) --cov src/ --cov-report html tests/

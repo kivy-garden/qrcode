@@ -1,6 +1,7 @@
 # Module QRCode
 
 [![Build Status](https://travis-ci.com/kivy-garden/qrcode.svg?branch=develop)](https://travis-ci.com/kivy-garden/qrcode)
+[![Github Actions Tests](https://github.com/kivy-garden/qrcode/workflows/Tests/badge.svg)](https://github.com/kivy-garden/qrcode/actions?query=workflow%3ATests)
 [![Coverage Status](https://coveralls.io/repos/github/kivy-garden/qrcode/badge.svg?branch=develop)](https://coveralls.io/github/kivy-garden/qrcode?branch=develop)
 [![PyPI version](https://badge.fury.io/py/kivy-garden.qrcode.svg)](https://badge.fury.io/py/kivy-garden.qrcode)
 
