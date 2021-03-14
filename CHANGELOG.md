@@ -6,6 +6,7 @@
   - Enable cover testing, refs #3
   - CI build over Docker, refs #4
   - Run tests under GitHub Actions, refs #18
+  - Auto publish to PyPI, refs #19
 
 ## [2019.0914]
 
